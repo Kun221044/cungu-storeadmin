@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cungu Sport Store — Kenya</title>
+<meta name="description" content="Racewear, team kit, GX200 and Rotax spares from Cungu Sport Kenya, priced in Kenyan shillings.">
+<meta property="og:title" content="Cungu Sport Store — Kenya">
+<meta property="og:description" content="Racewear, team kit, GX200 and Rotax spares from Cungu Sport Kenya, priced in Kenyan shillings.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b1220">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/cungu-sport-32.png">
+<link rel="apple-touch-icon" href="/assets/cungu-sport-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div>Racewear, team kit and spares · Nairobi, Kenya</div>
+    <div class="market-switch" id="marketSwitch" style="visibility:hidden">
+      <span>Shop:</span>
+      <a id="linkZA" href="#" class="">South Africa</a>
+      <a id="linkKE" href="#" class="on">Kenya</a>
+    </div>
+  </div>
+</div>
+
+<header class="main">
+  <div class="wrap">
+    <a class="logo" href="/">
+      <img src="/cungu-logo.png" alt="Cungu Sport"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="fallback" style="display:none">CUNGU SPORT</span>
+      <span class="tag">Kenya Store</span>
+    </a>
+    <div class="spacer"></div>
+    <div class="searchbox">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path>
+      </svg>
+      <input id="q" type="search" placeholder="Search helmets, suits, tyres…" aria-label="Search the catalogue">
+    </div>
+    <button class="cart-btn" id="cartBtn">
+      My list <span class="count" id="cartCount" style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="pill">Kenya · Prices in KES</span>
+    <h1>Kit for the Kenyan grid.</h1>
+    <p>Helmets, suits, tyres, GX200 and Rotax spares — landed and priced in shillings. Build a list, send it to us, and we come back with availability, the final price and how to pay.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="shell">
+    <aside class="side">
+      <h3>Categories</h3>
+      <ul class="cats" id="cats"></ul>
+    </aside>
+
+    <main>
+      <div class="toolbar">
+        <div class="count" id="count">Loading…</div>
+        <div class="spacer" style="flex:1"></div>
+        <label for="sort" style="font-size:13px;color:#667085">Sort</label>
+        <select id="sort">
+          <option value="name">Name A–Z</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </select>
+      </div>
+      <div id="grid"></div>
+      <div class="pager" id="pager"></div>
+    </main>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h4>Cungu Sport — Kenya</h4>
+        <p style="margin:0;max-width:44ch">Serving the Kenyan Rotax Max Challenge and the GX200 grid. Collection in Nairobi or courier countrywide.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:kenya@cungusportracing.com">kenya@cungusportracing.com</a>
+        <a href="tel:+254700000000">+254 700 000 000</a>
+        <a href="https://wa.me/254700000000" rel="noopener">WhatsApp</a>
+      </div>
+      <div>
+        <h4>Also from us</h4>
+        <a href="https://www.cungusportracing.com" rel="noopener">Main site</a>
+        <a id="otherStore" href="#" rel="noopener" style="display:none">South Africa store</a>
+      </div>
+    </div>
+    <div class="legal">
+      © <span id="yr"></span> Cungu Sport Racing · Nairobi, Kenya
+      <br>Prices are indicative and subject to supplier and exchange-rate movement. Confirmed on quote.
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer" id="drawer" aria-label="Your list">
+  <header>
+    <h3>Your list</h3>
+    <button class="close" id="closeCart" aria-label="Close">×</button>
+  </header>
+  <div class="items" id="cartItems"></div>
+  <footer>
+    <div class="total"><span>Estimated total</span><b id="cartTotal">—</b></div>
+    <button class="btn-primary" id="toQuote" disabled>Request a quote</button>
+    <p class="note">No payment is taken here. We reply by email with availability, the final price and how to pay.</p>
+  </footer>
+</aside>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="box">
+    <header>
+      <h3 id="modalTitle">—</h3>
+      <button class="close" id="closeModal" aria-label="Close"
+              style="background:none;border:none;font-size:24px;color:#667085">×</button>
+    </header>
+    <div class="pad" id="modalBody"></div>
+  </div>
+</div>
+
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
+<script src="/market.js"></script>
+<script src="https://storeadmin.cungusportracing.com/store-app.js" data-store="ke"></script>
+</body>
+</html>
