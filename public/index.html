@@ -147,6 +147,7 @@ pre.code{background:var(--soft);border-radius:6px;padding:12px;overflow-x:auto;f
       <button class="pri" id="btn-new">New product</button>
       <button id="btn-imp">Import CSV</button>
       <button id="btn-exp">Export CSV</button>
+      <button id="btn-copyimg" title="Copies photos that are linked from other websites into the Store Manager, so the stores no longer depend on those sites">Copy linked photos</button>
       <input type="file" id="file-prod" accept=".csv,text/csv" class="sr" aria-label="Product CSV file">
     </div>
     <div class="bar">
@@ -514,6 +515,22 @@ async function writeProduct(p){
   if(!canWrite){toast('Sign in to save changes.');return false;}
   try{const id=p.sku.toLowerCase();const r=await api('PUT','/api/products/'+encodeURIComponent(id),{product:clean(p),isNew:!P[id]});P[id]=r.product;render();return true;}catch(e){toast('Not saved: '+(e&&e.message||'the store database refused the change'));return false;}
 }
+async function copyLinkedPhotos(btn){
+  const todo=list().filter(p=>imgs(p).some(im=>im.external||/^https?:\/\//i.test(im.url)));
+  if(!todo.length){toast('No linked photos to copy - every photo is already stored here.');return;}
+  if(btn.dataset.sure!=='1'){btn.dataset.sure='1';btn.textContent=`Copy ${todo.length} products' photos? Click again`;setTimeout(()=>{btn.dataset.sure='';btn.textContent='Copy linked photos';},5000);return;}
+  btn.dataset.sure='';btn.disabled=true;let done=0,copied=0;const failed=[];
+  for(const p0 of todo){
+    const p=JSON.parse(JSON.stringify(p0));let changed=false;
+    for(let i=0;i<p.images.length;i++){const im=p.images[i];if(!(im.external||/^https?:\/\//i.test(im.url)))continue;
+      try{const r=await api('POST','/api/images/import',{url:im.url});p.images[i]={url:r.url,id:r.id,type:r.contentType,name:'Copied from '+new URL(im.url).hostname};changed=true;copied++;}
+      catch(e){failed.push(`${p.sku}: ${e.message}`);}}
+    if(changed&&!(await writeProduct(p)))break;
+    done++;btn.textContent=`Copying… ${done}/${todo.length}`;}
+  btn.disabled=false;btn.textContent='Copy linked photos';
+  toast(`${copied} photo${copied===1?'':'s'} copied${failed.length?`, ${failed.length} could not be copied and stay linked`:''}.`);
+  if(failed.length)banner('<strong>Some photos stayed as links</strong> (they still show on the stores while the other site keeps them online):<br>'+failed.slice(0,15).map(esc).join('<br>')+(failed.length>15?`<br>…and ${failed.length-15} more`:''));
+}
 async function deleteProduct(p){try{await api('DELETE','/api/products/'+encodeURIComponent(p.sku.toLowerCase()));delete P[p.sku.toLowerCase()];render();toast('Draft deleted');}catch(e){toast('Could not delete.');}}
 async function move(m){ // the server applies the movement and returns the updated product
   const lines=Array.isArray(m)?m:[m];
@@ -723,6 +740,7 @@ document.addEventListener('click',e=>{
   if(t.id==='btn-new')openEditor(null);
   if(t.id==='btn-imp')$('file-prod').click();
   if(t.id==='btn-exp')exportProducts();
+  if(t.id==='btn-copyimg')copyLinkedPhotos(t);
   if(t.id==='m-save')saveMove();
   if(t.id==='btn-mvimp')$('file-mv').click();
   if(t.id==='btn-count')countSheet();

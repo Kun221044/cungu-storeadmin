@@ -404,6 +404,22 @@ export default async (req) => {
       await data().setJSON("settings", next);
       return json({ settings: next });
     }
+    if (path === "/api/images/import" && method === "POST") {
+      // Copy a photo from another site (e.g. a supplier's product photo) into the Store Manager's own storage.
+      const body = await req.json().catch(() => ({}));
+      const src = String(body.url || "").trim();
+      let u; try { u = new URL(src); } catch { return fail(400, "That is not a web address."); }
+      if (u.protocol !== "https:" || /^(localhost|127\.|10\.|192\.168\.|169\.254\.)/.test(u.hostname)) return fail(400, "Use a public https:// photo address.");
+      const r = await fetch(u, { headers: { "user-agent": "Mozilla/5.0 (compatible; CunguStoreManager/1.0; +https://storeadmin.cungusportracing.com)", accept: "image/webp,image/jpeg,image/png,image/*;q=0.8" }, redirect: "follow", signal: AbortSignal.timeout(15000) }).catch(() => null);
+      if (!r || !r.ok) return fail(502, `The photo could not be downloaded (${r ? "the site answered " + r.status : "no answer"}).`);
+      const type = (r.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+      if (!/^image\/(jpeg|png|webp)$/.test(type)) return fail(415, `That address is not a JPG, PNG or WebP photo (${type || "unknown type"}).`);
+      const buf = await r.arrayBuffer();
+      if (buf.byteLength > 5 * 1024 * 1024) return fail(413, "Photo larger than 5 MB.");
+      const id = randomUUID().replace(/-/g, "");
+      await images().set(id, buf, { metadata: { contentType: type, size: buf.byteLength, name: u.pathname.split("/").pop().slice(0, 120), source: src.slice(0, 500), by: me.name, at: nowIso() } });
+      return json({ id, url: `/api/img/${id}`, contentType: type, sizeBytes: buf.byteLength, source: src });
+    }
     if (path === "/api/images" && method === "POST") {
       const type = (req.headers.get("content-type") || "").split(";")[0];
       if (!/^image\/(jpeg|png|webp)$/.test(type)) return fail(415, "Use JPG, PNG or WebP images.");

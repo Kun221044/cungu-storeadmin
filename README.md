@@ -70,6 +70,9 @@ Use long passwords (16+ characters). To add or remove a person, edit `ADMIN_USER
 
 The admin page sends `noindex` and refuses to be shown inside other sites.
 
+## Product photos from supplier sites
+`product-photos.csv` (sku, image_url, photo_source, product) links 115 of the 157 products to a photo on Mondokart or Kartshop. Load it with **Products → Import CSV**: each photo is added to that product (existing photos are kept) and appears on both stores within a minute. Then click **Products → Copy linked photos** so the Store Manager keeps its own copy of each photo and the stores stop depending on the supplier sites; any photo a site refuses to hand over stays as a link and is listed. `POST /api/images/import {url}` is the call behind that button.
+
 ## 4. First sign-in
 
 Open https://storeadmin.cungusportracing.com, sign in with a name and password from `ADMIN_USERS`.
@@ -201,6 +204,7 @@ Or, with the Netlify CLI and real Blobs: `npx netlify dev`.
 | `PUT /api/settings` | exchange rate, VAT, uplift, rounding, markups, delivery months |
 | `POST /api/images` (raw image body) · `DELETE /api/images/:id` | photos (JPG/PNG/WebP, resized in the browser, 5 MB max) |
 | `GET /api/quotes?status=new` · `PUT /api/quotes/:id` `{action: accept\|decline\|reopen\|save, lines?, note?}` | quote requests; accept takes the lines off stock |
+| `POST /api/images/import` `{url}` | copy a photo from another site into storage |
 | `GET /api/backup` · `POST /api/restore` | full JSON backup / restore (backup includes quotes) |
 
 Changes from the browser must carry the header `X-Requested-With: storeadmin` and the cookie is `SameSite=Strict`, which blocks cross-site form attacks.
