@@ -53,13 +53,14 @@ var LOGO = API + "/brand/csr-kart-parts-logo-480.webp", LOGO2X = API + "/brand/c
   /* ---------------- departments ---------------- */
   var DEPTS = [
     { id: "karts", name: "Karts", sub: "Complete karts & chassis", icon: "kart" },
-    { id: "engines", name: "Engines", sub: "Complete race engines", icon: "engine" },
-    { id: "engine-parts", name: "Engine parts", sub: "Rotax, KZ & carburettors", icon: "piston" },
+    { id: "engines", name: "Engines", sub: "Rotax Max & E10", icon: "engine" },
+    { id: "engine-parts", name: "Engine parts", sub: "Rotax, KZ & Comer", icon: "piston" },
     { id: "kart-parts", name: "Kart parts", sub: "Keep your kart race ready", icon: "wheel" },
     { id: "clothing", name: "Clothing", sub: "Helmets, suits & teamwear", icon: "helmet" },
     { id: "data", name: "Data loggers", sub: "MyChron & sensors", icon: "gauge" },
+    { id: "tools", name: "Tools", sub: "Workshop, tyre & Rotax tools", icon: "wrench" },
     { id: "oil", name: "Oil / Spray", sub: "Lubes & fluids", icon: "oil" },
-    { id: "universal", name: "Universal parts", sub: "Clamps, ties & springs", icon: "wrench" },
+    { id: "universal", name: "Universal parts", sub: "Clamps, ties & springs", icon: "box" },
     { id: "tyres", name: "Tyres", sub: "Slicks & wets", icon: "tyre" },
   ];
   var DEPT_BY_ID = {}; DEPTS.forEach(function (d) { DEPT_BY_ID[d.id] = d; });
@@ -130,6 +131,7 @@ var LOGO = API + "/brand/csr-kart-parts-logo-480.webp", LOGO2X = API + "/brand/c
     [/\botk\b|tony/i, "OTK"], [/\bkg\b|kc c3/i, "KG"], [/new ?-?line|newl line|newline/i, "New-Line"], [/righetti|\brr\b/i, "Righetti Ridolfi"],
     [/arai|gpv-r|skv-r|ck6/i, "Arai"], [/alpinestars|kmx/i, "Alpinestars"], [/sparco/i, "Sparco"], [/mojo/i, "Mojo"], [/\bdid\b/i, "DID"],
     [/ipk|praga/i, "IPK"], [/birel/i, "Birel"], [/\bcrg\b/i, "CRG"], [/mikuni/i, "Mikuni"], [/\bpvl\b/i, "PVL"], [/top-?kart/i, "Top-Kart"],
+    [/tillett/i, "Tillett"], [/\bcomer\b|\bc5[02]\b|cx52/i, "Comer"], [/bambino|blue boy/i, "Top-Kart"], [/\bkg\b/i, "KG"],
     [/formula k/i, "Formula K"], [/mondo ?kart/i, "Mondokart"], [/nike/i, "Nike"], [/chisu|csr\b|cungu/i, "CSR"], [/freem/i, "Freem"],
   ];
   function brandOf(p) { var h = p.name + " " + (p.description || ""); for (var i = 0; i < BRANDS.length; i++) if (BRANDS[i][0].test(h)) return BRANDS[i][1]; return ""; }
