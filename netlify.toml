@@ -50,3 +50,10 @@
   [headers.values]
     Cache-Control = "no-cache"
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self' https://sastore.cungusportracing.com https://kestore.cungusportracing.com; base-uri 'self'; form-action 'self'"
+
+# Store logo and icons (loaded by both stores)
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Access-Control-Allow-Origin = "*"
